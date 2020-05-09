@@ -5,8 +5,7 @@
  */
 package esqueletoprincipal;
 
-import Clases.Aristas;
-import Clases.Vertice;
+import Clases.*;
 import javax.swing.JOptionPane;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -36,13 +35,13 @@ public class Conectar extends javax.swing.JDialog {
     
     private void populateCB1(){
         CB1.addItem("Seleccione");
-        for(Vertice v : PantallaInicial.G.Ver){
+        for(Vertice v : IngresoInicial.G.Ver){
             CB1.addItem(v.name);
         }
     }
     private void populateCB2(){
         CB2.addItem("Seleccione");
-        for(Vertice v : PantallaInicial.G.Ver){
+        for(Vertice v : IngresoInicial.G.Ver){
             CB2.addItem(v.name);
         }
     }
@@ -62,6 +61,7 @@ public class Conectar extends javax.swing.JDialog {
         CB2 = new javax.swing.JComboBox<>();
         TA1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        Checkbox = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -82,6 +82,8 @@ public class Conectar extends javax.swing.JDialog {
                 jButton1ActionPerformed(evt);
             }
         });
+
+        Checkbox.setText("Es Carretera?");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -105,8 +107,11 @@ public class Conectar extends javax.swing.JDialog {
                             .addComponent(CB2, javax.swing.GroupLayout.Alignment.TRAILING, 0, 100, Short.MAX_VALUE)
                             .addComponent(CB1, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(134, 134, 134)
-                        .addComponent(jButton1)))
+                        .addGap(133, 133, 133)
+                        .addComponent(jButton1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(48, 48, 48)
+                        .addComponent(Checkbox)))
                 .addContainerGap(215, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -124,9 +129,11 @@ public class Conectar extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(TA1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(64, 64, 64)
+                .addGap(30, 30, 30)
+                .addComponent(Checkbox)
+                .addGap(36, 36, 36)
                 .addComponent(jButton1)
-                .addContainerGap(148, Short.MAX_VALUE))
+                .addContainerGap(121, Short.MAX_VALUE))
         );
 
         pack();
@@ -135,11 +142,15 @@ public class Conectar extends javax.swing.JDialog {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if(!TA1.getText().trim().isEmpty() && !CB1.getSelectedItem().equals("Seleccione") && !CB2.getSelectedItem().equals("Seleccione")){
             KM2 = Integer.parseInt(TA1.getText());
-            In = PantallaInicial.G.Ver.get(CB1.getSelectedIndex()-1);
-            Out = PantallaInicial.G.Ver.get(CB2.getSelectedIndex()-1);
-            System.out.println(In.name);
-            System.out.println(Out.name);
-            PantallaInicial.G.Ari.add(new Aristas(In,Out,KM2));
+            In = IngresoInicial.G.Ver.get(CB1.getSelectedIndex()-1);
+            Out = IngresoInicial.G.Ver.get(CB2.getSelectedIndex()-1);
+
+            if(Checkbox.isSelected()){
+                IngresoInicial.G.agregarArista(In, Out, KM2);
+            }else{
+                IngresoInicial.G.agregarAristaSinC(In, Out, KM2);
+            }
+            
             this.dispose();
         }else{
             JOptionPane.showMessageDialog(null, "Seleccione y escriba todo los campos", "ERORR", JOptionPane.ERROR_MESSAGE);
@@ -191,6 +202,7 @@ public class Conectar extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> CB1;
     private javax.swing.JComboBox<String> CB2;
+    private javax.swing.JCheckBox Checkbox;
     private javax.swing.JTextField TA1;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;

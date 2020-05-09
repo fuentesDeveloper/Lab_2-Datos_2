@@ -1,18 +1,7 @@
 package esqueletoprincipal;
 
-import Clases.Grafo;
-import Clases.Vertice;
-import static esqueletoprincipal.PantallaInicial.G;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -28,18 +17,17 @@ public class PantallaInicial extends javax.swing.JFrame {
     /**
      * Creates new form PantallaInicial
      */
-    public static Grafo G;
-    
+
 
     public PantallaInicial() {
         initComponents();
-        G = new Grafo();
+
 
 //        try {
-            File file = new File("Cuadricula #718792.png");
-            System.out.println(file.getAbsolutePath());
+        File file = new File("Cuadricula #718792.png");
+        System.out.println(file.getAbsolutePath());
 //            image = ImageIO.read(file);
-            repaint();
+        repaint();
 
 //        } catch (IOException e) {
 //        }
@@ -144,4 +132,3 @@ public class PantallaInicial extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }
-

@@ -6,26 +6,25 @@
 package esqueletoprincipal;
 
 import Clases.*;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Arrays;
+import java.util.LinkedList;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
-
 
 /**
  *
@@ -38,17 +37,22 @@ public class IngresoInicial extends javax.swing.JPanel {
      */
     public Graphics g;
     public int km2, airport;
-    private static Object lock = new Object();
+    
+    public static Grafo G;
 
     public IngresoInicial() {
         initComponents();
         points = new ArrayList<>();
         setBackground(Color.WHITE);
+        G = new Grafo();
 
         try {
             File file = new File("Cuadricula #718792.png");
+            File file2 = new File("airportR.png");
+
             System.out.println(file.getAbsolutePath());
             image = ImageIO.read(file);
+            image2 = ImageIO.read(file2);
 
         } catch (IOException e) {
         }
@@ -56,32 +60,72 @@ public class IngresoInicial extends javax.swing.JPanel {
 
     public ArrayList<Point> points;
     public boolean EntraClick = false;
-    private BufferedImage image;
+    private BufferedImage image, image2;
     private int hold = -1;
+    public LinkedList<Drawed> Draw;
+    
+    class Drawed{
+        int x1,x2,y1,y2;
+        public Drawed(int x1,int x2,int y1,int y2){
+            this.x1 = x1;
+            this.y1 = y1;
+            this.x2 = x2;
+            this.y2 = y2;
+        }
+    }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g3 = (Graphics2D) g.create();
         g3.drawImage(image, 200, 80, null);
+        for (Vertice v : G.Ver) {
+            if (v.air) {
+                g3.drawImage(image2, v.x + 23, v.y, null);
+            }
+        }
         g3.dispose();
 
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(Color.BLACK);
+        Graphics2D g4 = (Graphics2D) g;
+        g4.setColor(Color.BLACK);
+        Stroke Default = g2.getStroke();
         int Cont = 0;
-        for(Aristas a : PantallaInicial.G.Ari){
-            g2.drawLine(a.Inicio.x+10, a.Inicio.y+10, a.Fin.x+10, a.Fin.y+10);
-            Cont++;
-            System.out.println(Cont);
+        Draw = new LinkedList<>();
+        boolean Sw;
+        for (Aristas a : G.Ari) {
+            Sw = false;
+            for(Drawed D : Draw){
+                if((a.Inicio.x == D.x1 && a.Fin.x == D.x2) || (a.Inicio.x == D.x2) && (a.Fin.x == D.x1) ){
+                    Sw = true;
+                }
+            }
+            if(!Sw){
+                if (!a.Carretera) {
+                    float[] dashingPattern2 = {10f, 4f};
+                    Stroke stroke2 = new BasicStroke(4f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f, dashingPattern2, 0.0f);
+
+                    g4.setStroke(stroke2);
+                } else {
+                    g4.setStroke(Default);
+                    g4.setColor(Color.BLACK);
+                }
+                g4.drawLine(a.Inicio.x + 10, a.Inicio.y + 10, a.Fin.x + 10, a.Fin.y + 10);
+                g4.setStroke(Default);
+                
+                Draw.add(new Drawed(a.Inicio.x,a.Fin.x,a.Inicio.y,a.Fin.y));
+            }
         }
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setColor(Color.red);
-        for (Vertice v : PantallaInicial.G.Ver) {
+
+        for (Vertice v : G.Ver) {
+            g2.setColor(Color.red);
             g2.fillOval(v.x, v.y, 20, 20);
+            g2.setColor(Color.BLACK);
+            g2.drawString(v.name, v.x - 10, v.y - 3);
+
         }
-        
-        
-        
+
 //        points.forEach((point) -> {
 //            g2.fillOval(point.x, point.y, 20, 20);
 //
@@ -110,30 +154,22 @@ public class IngresoInicial extends javax.swing.JPanel {
     private void initComponents() {
 
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         InCostos = new javax.swing.JButton();
         Aristas = new javax.swing.JButton();
+        costo_done = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(1080, 800));
         setMinimumSize(new java.awt.Dimension(1080, 800));
         setPreferredSize(new java.awt.Dimension(1080, 800));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton1.setText("Draw");
+        jButton1.setText("Agregar Puntos");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
-        add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, -1, -1));
-
-        jButton2.setText("Stop Drawing");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-        add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, -1, -1));
+        add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, -1, -1));
 
         InCostos.setText("Ingresar Costos");
         InCostos.addActionListener(new java.awt.event.ActionListener() {
@@ -141,7 +177,7 @@ public class IngresoInicial extends javax.swing.JPanel {
                 InCostosActionPerformed(evt);
             }
         });
-        add(InCostos, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 240, -1, -1));
+        add(InCostos, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 180, -1, -1));
 
         Aristas.setText("Ingresar Aristas");
         Aristas.addActionListener(new java.awt.event.ActionListener() {
@@ -149,32 +185,37 @@ public class IngresoInicial extends javax.swing.JPanel {
                 AristasActionPerformed(evt);
             }
         });
-        add(Aristas, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 300, -1, -1));
+        add(Aristas, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 240, -1, -1));
+
+        costo_done.setText("Calcular Aero");
+        costo_done.setEnabled(false);
+        costo_done.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                costo_doneActionPerformed(evt);
+            }
+        });
+        add(costo_done, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 290, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
 
+    int Control = 0;
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         EntraClick = false;
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (!EntraClick) {
-
                     if (e.getX() > 199) {
                         if (e.getY() > 79) {
                             points.add(new Point(e.getX(), e.getY()));
-                            
-                            
-                            
-                            
-                            Crear cn = new Crear(null,true);
+                            Crear cn = new Crear(null, true);
                             cn.setVisible(true);
-                            EntraClick = true;
-                            System.out.println("Ejecuto");
                             String Nombre = cn.get;
                             boolean air = cn.air;
                             cn.dispose();
-                            PantallaInicial.G.Ver.add(new Vertice(Nombre, e.getX(), e.getY(), air));
+                            G.agregarVertice(new Vertice(Nombre, e.getX(), e.getY(), air));
                             repaint();
+                            EntraClick = true;
 
                         } else {
                             JOptionPane.showMessageDialog(null, "Fuera de los limites", "ERORR", JOptionPane.ERROR_MESSAGE);
@@ -187,31 +228,41 @@ public class IngresoInicial extends javax.swing.JPanel {
         });
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        EntraClick = true;
-    }//GEN-LAST:event_jButton2ActionPerformed
-
     private void InCostosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InCostosActionPerformed
-        Costos Ca = new Costos(null,true);
+        Costos Ca = new Costos(null, true);
         Ca.setVisible(true);
         km2 = Ca.KM2;
         airport = Ca.Air;
         Ca.dispose();
         System.out.println(km2);
         System.out.println(airport);
+        costo_done.setEnabled(true);
     }//GEN-LAST:event_InCostosActionPerformed
 
     private void AristasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AristasActionPerformed
-        Conectar C = new Conectar(null,true);
+        Conectar C = new Conectar(null, true);
         C.setVisible(true);
         repaint();
     }//GEN-LAST:event_AristasActionPerformed
 
+    private void costo_doneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_costo_doneActionPerformed
+        CalcularCostos C = new CalcularCostos(null, true);
+        C.setVisible(true);
+        Vertice Selected = C.Select;
+        C.dispose();
+        G.BellmanFord(Selected);
+        System.out.println(Arrays.toString(G.Retornar1));
+        System.out.println(Arrays.toString(G.Retornar2));
+        System.out.println(Arrays.toString(G.Retornar3));
 
+
+    }//GEN-LAST:event_costo_doneActionPerformed
+
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Aristas;
     private javax.swing.JButton InCostos;
+    private javax.swing.JButton costo_done;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     // End of variables declaration//GEN-END:variables
 }
