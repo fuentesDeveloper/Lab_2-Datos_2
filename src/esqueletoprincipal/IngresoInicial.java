@@ -5,7 +5,7 @@
  */
 package esqueletoprincipal;
 
-import Clases.Vertice;
+import Clases.*;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Graphics;
@@ -14,16 +14,18 @@ import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.swing.JFrame;
-import javax.swing.JLayeredPane;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -34,54 +36,69 @@ public class IngresoInicial extends javax.swing.JPanel {
     /**
      * Creates new form IngresoInicial
      */
-
     public Graphics g;
+    public int km2, airport;
+    private static Object lock = new Object();
+
     public IngresoInicial() {
         initComponents();
         points = new ArrayList<>();
         setBackground(Color.WHITE);
-        
-         try{
-             File file = new File("Cuadricula #718792.png");
-             System.out.println(file.getAbsolutePath());
+
+        try {
+            File file = new File("Cuadricula #718792.png");
+            System.out.println(file.getAbsolutePath());
             image = ImageIO.read(file);
-            
-        }catch(IOException e){
-        } 
+
+        } catch (IOException e) {
+        }
     }
 
     public ArrayList<Point> points;
     public boolean EntraClick = false;
     private BufferedImage image;
+    private int hold = -1;
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g3 = (Graphics2D) g.create();
-        g3.drawImage(image,200, 80, null);
-         g3.dispose();
+        g3.drawImage(image, 200, 80, null);
+        g3.dispose();
 
         Graphics2D g2 = (Graphics2D) g;
+        g2.setColor(Color.BLACK);
+        int Cont = 0;
+        for(Aristas a : PantallaInicial.G.Ari){
+            g2.drawLine(a.Inicio.x+10, a.Inicio.y+10, a.Fin.x+10, a.Fin.y+10);
+            Cont++;
+            System.out.println(Cont);
+        }
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setColor(Color.red);
-        points.forEach((point) -> {
-             g2.fillOval(point.x, point.y,20,20 );
-                
-        });             
+        for (Vertice v : PantallaInicial.G.Ver) {
+            g2.fillOval(v.x, v.y, 20, 20);
+        }
+        
+        
+        
+//        points.forEach((point) -> {
+//            g2.fillOval(point.x, point.y, 20, 20);
+//
+//        });
     }
-    
-    public static void main(String args[]){
+
+    public static void main(String args[]) {
         EventQueue.invokeLater(() -> {
             JFrame frame = new JFrame();
             frame.add(new IngresoInicial());
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(1080,800);
+            frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            frame.setSize(1080, 800);
             frame.setResizable(false);
             frame.setVisible(true);
-           
+
         });
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -94,7 +111,8 @@ public class IngresoInicial extends javax.swing.JPanel {
 
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        InCostos = new javax.swing.JButton();
+        Aristas = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(1080, 800));
         setMinimumSize(new java.awt.Dimension(1080, 800));
@@ -107,7 +125,7 @@ public class IngresoInicial extends javax.swing.JPanel {
                 jButton1ActionPerformed(evt);
             }
         });
-        add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, -1, -1));
+        add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, -1, -1));
 
         jButton2.setText("Stop Drawing");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -115,55 +133,85 @@ public class IngresoInicial extends javax.swing.JPanel {
                 jButton2ActionPerformed(evt);
             }
         });
-        add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 170, -1, -1));
+        add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, -1, -1));
 
-        jButton3.setText("Enter");
-        add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, -1, -1));
+        InCostos.setText("Ingresar Costos");
+        InCostos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                InCostosActionPerformed(evt);
+            }
+        });
+        add(InCostos, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 240, -1, -1));
+
+        Aristas.setText("Ingresar Aristas");
+        Aristas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AristasActionPerformed(evt);
+            }
+        });
+        add(Aristas, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 300, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       EntraClick = false;
-            addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mousePressed(MouseEvent e) {
-                        if(!EntraClick){
-                            if(e.getX()>199) {
-                                if (e.getY()>79) {
-                                    points.add(new Point(e.getX(), e.getY()));
-                                    Crear cn = new Crear();
-                                    cn.setVisible(true);
-                                    int hold = -1;
-                                    do {
-                                        if (cn.isActive()) {
-                                        } else {
-                                            break;
-                                         }
-                                    } while (hold < 1);
-                                    
-                                    String Nombre = cn.get;
-                                    boolean air = cn.air;
-                                    PantallaInicial.G.Ver.add(new Vertice(Nombre,e.getX(),e.getY(),air));
-                                    repaint();
-                                }
-                                else{
-                                    JOptionPane.showMessageDialog(null, "Fuera de los limites", "ERORR", JOptionPane.ERROR_MESSAGE);
-                                }
-                            }else{
-                                JOptionPane.showMessageDialog(null, "Fuera de los limites", "ERORR", JOptionPane.ERROR_MESSAGE);
-                            } 
+        EntraClick = false;
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (!EntraClick) {
+
+                    if (e.getX() > 199) {
+                        if (e.getY() > 79) {
+                            points.add(new Point(e.getX(), e.getY()));
+                            
+                            
+                            
+                            
+                            Crear cn = new Crear(null,true);
+                            cn.setVisible(true);
+                            EntraClick = true;
+                            System.out.println("Ejecuto");
+                            String Nombre = cn.get;
+                            boolean air = cn.air;
+                            cn.dispose();
+                            PantallaInicial.G.Ver.add(new Vertice(Nombre, e.getX(), e.getY(), air));
+                            repaint();
+
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Fuera de los limites", "ERORR", JOptionPane.ERROR_MESSAGE);
                         }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Fuera de los limites", "ERORR", JOptionPane.ERROR_MESSAGE);
                     }
-            });
+                }
+            }
+        });
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         EntraClick = true;
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void InCostosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InCostosActionPerformed
+        Costos Ca = new Costos(null,true);
+        Ca.setVisible(true);
+        km2 = Ca.KM2;
+        airport = Ca.Air;
+        Ca.dispose();
+        System.out.println(km2);
+        System.out.println(airport);
+    }//GEN-LAST:event_InCostosActionPerformed
+
+    private void AristasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AristasActionPerformed
+        Conectar C = new Conectar(null,true);
+        C.setVisible(true);
+        repaint();
+    }//GEN-LAST:event_AristasActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Aristas;
+    private javax.swing.JButton InCostos;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     // End of variables declaration//GEN-END:variables
 }

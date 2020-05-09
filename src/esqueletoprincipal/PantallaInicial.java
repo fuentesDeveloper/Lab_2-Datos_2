@@ -1,14 +1,24 @@
 package esqueletoprincipal;
 
 import Clases.Grafo;
+import Clases.Vertice;
+import static esqueletoprincipal.PantallaInicial.G;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author TheLokestraps
@@ -18,12 +28,21 @@ public class PantallaInicial extends javax.swing.JFrame {
     /**
      * Creates new form PantallaInicial
      */
-       public static Grafo G;
-       public int km2,airport;
+    public static Grafo G;
+    
+
     public PantallaInicial() {
         initComponents();
         G = new Grafo();
-        
+
+//        try {
+            File file = new File("Cuadricula #718792.png");
+            System.out.println(file.getAbsolutePath());
+//            image = ImageIO.read(file);
+            repaint();
+
+//        } catch (IOException e) {
+//        }
     }
 
     /**
@@ -36,15 +55,12 @@ public class PantallaInicial extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        AddSites = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 102));
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -59,68 +75,34 @@ public class PantallaInicial extends javax.swing.JFrame {
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 37, 880, 760));
 
-        jButton4.setText("AgregarSitios");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        AddSites.setText("AgregarSitios");
+        AddSites.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                AddSitesActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 180, 130, -1));
-
-        jButton5.setText("Calcular desde ");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 230, 130, -1));
-
-        jButton6.setText("Ingresar Costos");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 130, 130, -1));
-
-        jButton1.setText("Detallar Distancia");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 280, -1, -1));
+        getContentPane().add(AddSites, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 180, 130, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        Costos Ca = new Costos(this,true);
-        Ca.setVisible(true);
-        km2 = Ca.KM2;
-        airport = Ca.Air;
-        Ca.dispose();
-        System.out.println(km2);
-        System.out.println(airport);
-    }//GEN-LAST:event_jButton6ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void AddSitesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddSitesActionPerformed
         JFrame frame = new JFrame();
-            frame.add(new IngresoInicial());
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(1080,800);
-            frame.setResizable(false);
-            frame.setVisible(true);
-        
-    }//GEN-LAST:event_jButton4ActionPerformed
+        frame.add(new IngresoInicial());
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.setSize(1080, 800);
+        frame.setResizable(false);
+        frame.setVisible(true);
+        int hold = -1;
+        do {
+            if (frame.isActive()) {
+            } else {
+                break;
+            }
+        } while (hold < 1);
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        repaint();
+    }//GEN-LAST:event_AddSitesActionPerformed
 
     /**
      * @param args the command line arguments
@@ -158,10 +140,8 @@ public class PantallaInicial extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
+    private javax.swing.JButton AddSites;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }
+

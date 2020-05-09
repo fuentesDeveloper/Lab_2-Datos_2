@@ -5,25 +5,34 @@
  */
 package esqueletoprincipal;
 
+import Clases.Aristas;
 import Clases.Vertice;
 import javax.swing.JOptionPane;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 /**
  *
  * @author TheLokestraps
  */
-public class Conectar extends javax.swing.JFrame {
+public class Conectar extends javax.swing.JDialog {
 
     /**
      * Creates new form Conectar
+     * @param parent
+     * @param modal
      */
-    public Conectar() {
+    public Conectar(java.awt.Frame parent, boolean modal) {
+        super(parent,modal);
         initComponents();
+        CB1.removeAllItems();
+        CB2.removeAllItems();
         populateCB1();
         populateCB2();
     }
     int KM2;
     Vertice In,Out;
+    
     
     private void populateCB1(){
         CB1.addItem("Seleccione");
@@ -54,7 +63,8 @@ public class Conectar extends javax.swing.JFrame {
         TA1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setAlwaysOnTop(true);
 
         jLabel1.setText("Conectar A");
 
@@ -125,11 +135,12 @@ public class Conectar extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if(!TA1.getText().trim().isEmpty() && !CB1.getSelectedItem().equals("Seleccione") && !CB2.getSelectedItem().equals("Seleccione")){
             KM2 = Integer.parseInt(TA1.getText());
-            In = PantallaInicial.G.Ver.get(CB1.getSelectedIndex());
-            Out = PantallaInicial.G.Ver.get(CB2.getSelectedIndex());
+            In = PantallaInicial.G.Ver.get(CB1.getSelectedIndex()-1);
+            Out = PantallaInicial.G.Ver.get(CB2.getSelectedIndex()-1);
             System.out.println(In.name);
             System.out.println(Out.name);
-            
+            PantallaInicial.G.Ari.add(new Aristas(In,Out,KM2));
+            this.dispose();
         }else{
             JOptionPane.showMessageDialog(null, "Seleccione y escriba todo los campos", "ERORR", JOptionPane.ERROR_MESSAGE);
         }
@@ -163,10 +174,17 @@ public class Conectar extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Conectar().setVisible(true);
-            }
+       java.awt.EventQueue.invokeLater(new Runnable() {
+	public void run() {
+		Crear dialog = new Crear(new javax.swing.JFrame(), true);
+		dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent e) {
+				System.exit(0);
+			}
+		});
+		dialog.setVisible(true);
+	}
         });
     }
 

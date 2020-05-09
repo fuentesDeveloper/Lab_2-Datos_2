@@ -11,14 +11,15 @@ import javax.swing.JOptionPane;
  *
  * @author TheLokestraps
  */
-public class Crear extends javax.swing.JFrame {
+public class Crear extends javax.swing.JDialog{
 
     /**
      * Creates new form Crear
      */
     public String get;
     public boolean air;
-    public Crear() {
+    public Crear(java.awt.Frame parent, boolean modal) {
+        super(parent,modal);
         initComponents();
     }
     
@@ -36,8 +37,6 @@ public class Crear extends javax.swing.JFrame {
         TA1 = new javax.swing.JTextField();
         C = new javax.swing.JCheckBox();
         jButton1 = new javax.swing.JButton();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Nombre de la Ciudad");
 
@@ -124,10 +123,17 @@ public class Crear extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Crear().setVisible(true);
-            }
+         java.awt.EventQueue.invokeLater(new Runnable() {
+	public void run() {
+		Crear dialog = new Crear(new javax.swing.JFrame(), true);
+		dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent e) {
+				System.exit(0);
+			}
+		});
+		dialog.setVisible(true);
+	}
         });
     }
 

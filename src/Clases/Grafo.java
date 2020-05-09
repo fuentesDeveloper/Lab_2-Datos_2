@@ -32,6 +32,7 @@ public class Grafo {
     
     public void agregarArista(Vertice NodoInicial, Vertice NodoFinal,int peso) {
        Ari.add(new Aristas(NodoInicial,NodoFinal,peso));
+       Ari.add(new Aristas(NodoFinal,NodoInicial,peso));
        CantidadA++;
     }
     public void agregarVertice(Vertice Nodo){
