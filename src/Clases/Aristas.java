@@ -10,5 +10,14 @@ package Clases;
  * @author TheLokestraps
  */
 public class Aristas {
+   
+    public Vertice Inicio,Fin;
+    public int Peso;
+
+    public Aristas(Vertice Inicio, Vertice Fin, int Peso) {
+        this.Inicio = Inicio;
+        this.Fin = Fin;
+        this.Peso = Peso;
+    }
     
 }

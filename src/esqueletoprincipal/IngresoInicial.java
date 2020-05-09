@@ -5,6 +5,7 @@
  */
 package esqueletoprincipal;
 
+import Clases.Vertice;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Graphics;
@@ -77,8 +78,10 @@ public class IngresoInicial extends javax.swing.JPanel {
             frame.setSize(1080,800);
             frame.setResizable(false);
             frame.setVisible(true);
+           
         });
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -121,13 +124,25 @@ public class IngresoInicial extends javax.swing.JPanel {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
        EntraClick = false;
             addMouseListener(new MouseAdapter() {
-
                     @Override
                     public void mousePressed(MouseEvent e) {
                         if(!EntraClick){
                             if(e.getX()>199) {
                                 if (e.getY()>79) {
                                     points.add(new Point(e.getX(), e.getY()));
+                                    Crear cn = new Crear();
+                                    cn.setVisible(true);
+                                    int hold = -1;
+                                    do {
+                                        if (cn.isActive()) {
+                                        } else {
+                                            break;
+                                         }
+                                    } while (hold < 1);
+                                    
+                                    String Nombre = cn.get;
+                                    boolean air = cn.air;
+                                    PantallaInicial.G.Ver.add(new Vertice(Nombre,e.getX(),e.getY(),air));
                                     repaint();
                                 }
                                 else{

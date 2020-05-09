@@ -5,32 +5,21 @@
  */
 package Clases;
 
+
 /**
  *
  * @author TheLokestraps
  */
 public class Vertice {
     
-    public int x,y,peso;
+    public int x,y;
     public String name;
     public boolean air;
-    
 
-    public Vertice(String name,int x, int y, boolean air) {
+    public Vertice(String name,int x, int y,boolean air) {
         this.x = x;
         this.y = y;
         this.name = name;
         this.air = air;
     }
-    public Vertice(String name,int x, int y, boolean air,int peso) {
-        this.x = x;
-        this.y = y;
-        this.name = name;
-        this.air = air;
-        this.peso = peso;
-        
-    }
-    
-    
-    
 }
